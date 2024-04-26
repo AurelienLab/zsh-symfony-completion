@@ -1,15 +1,27 @@
 _symfony_console_all_commands() {
     local command
+    local word_to_evaluate
+    local prefix
 
-    if [ -f "./$words[1]" ]; then
-        command=('php' $words[1])
-    elif type "$words[1]" &> /dev/null; then
-        command=$words[1]
+    # Si le premier mot est "herd", utilisez le deuxième mot
+    if [[ "$words[1]" == "herd" ]]; then
+        word_to_evaluate="$words[2]"
+	prefix="herd "
+    # Sinon, utilisez le premier mot
+    else
+        word_to_evaluate="$words[1]"
+    	prefix=""
+    fi
+
+    if [ -f "./$word_to_evaluate" ]; then
+        command=('php' $word_to_evaluate)
+    elif type "$word_to_evaluate" &> /dev/null; then
+        command=$word_to_evaluate
     else
         return
     fi
 
-    eval "$command --raw" | sed 's/:/\\:/g' | sed 's/ \{2,\}/:/g'
+    eval "$prefix$command --raw" | sed 's/:/\\:/g' | sed 's/ \{2,\}/:/g'
 }
 
 _symfony_console_describe() {
